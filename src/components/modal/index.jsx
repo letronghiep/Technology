@@ -1,5 +1,5 @@
-"use client";
-import React, { useCallback, useEffect, useState } from "react";
+
+import  { useCallback, useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import Button from "../button";
 function Modal({
@@ -8,6 +8,7 @@ function Modal({
   disabled,
   onClose,
   onSubmit,
+  footer,
   body,
   actionLabel,
   secondaryAction,
@@ -155,6 +156,7 @@ function Modal({
                   />
                 )}
               </div>
+              {footer}
             </div>
           </div>
         </div>

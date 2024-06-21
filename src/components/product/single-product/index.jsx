@@ -1,4 +1,9 @@
-import { ArrowDropDown } from "@mui/icons-material";
+import {
+  Add,
+  ArrowDropDown,
+  RemoveOutlined,
+  ShoppingCartCheckout,
+} from "@mui/icons-material";
 import { Box, Grid, Rating, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
@@ -12,6 +17,8 @@ import RelatedProduct from "../related-product";
 import { getAllNews } from "../../../services/news";
 import { useDispatch, useSelector } from "react-redux";
 import { onClose, onOpen } from "../../../hooks/useSpecModal";
+import { addItemToCart } from "../../../store/cart/cartSlice";
+import toast from "react-hot-toast";
 
 function SingleProduct({ product }) {
   const { name, price, promotion, specs, gallery, description } = product;
@@ -39,6 +46,21 @@ function SingleProduct({ product }) {
 
   const handleCloseModal = () => {
     dispatch(onClose());
+  };
+  // Handle cart
+  const [value, setValue] = useState(1);
+  const handleChangeValue = (e) => {
+    setValue(e.target.value);
+  };
+  const handleDecrease = () => {
+    setValue((_value) => _value - 1);
+  };
+  const handleIncrease = () => {
+    setValue((_value) => _value + 1);
+  };
+  const handleAddToCart = () => {
+    dispatch(addItemToCart({productToAdd: product, quantity: value}));
+    toast("Thêm vào giỏ hàng thành công");
   };
   if (!product) return <h2>Loading...</h2>;
   const bodyContent = (
@@ -153,6 +175,28 @@ function SingleProduct({ product }) {
               </Box>
             )}
           </Box>
+          <div className="flex items-center gap-x-2">
+            <div className="flex items-center gap-2">
+              <button onClick={handleDecrease} disabled={parseInt(value) <= 1}>
+                <RemoveOutlined />
+              </button>
+              <input
+                className="max-w-[40px] outline border text-center"
+                min={1}
+                value={value}
+                onChange={handleChangeValue}
+              />
+              <button onClick={handleIncrease}>
+                <Add />
+              </button>
+            </div>
+            <div className="flex items-center gap-x-2 py-1 px-3 border rounded-sm">
+              <ShoppingCartCheckout />
+              <button onClick={handleAddToCart} className="">
+                Thêm vào giỏ hàng
+              </button>
+            </div>
+          </div>
           <Box
             sx={{
               display: "flex",
@@ -343,7 +387,6 @@ function SingleProduct({ product }) {
         className="Slider-Modal"
         isOpen={isOpen}
         onClose={handleCloseModal}
-        
         body={bodyContent}
         title="Thông số kĩ thuật"
       />

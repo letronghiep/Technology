@@ -120,7 +120,7 @@ const SidebarDesktop = ({ categories }) => {
                     borderRadius: '4px',
                     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                     padding: '8px 0',
-                    // width: '292px',
+                    width: '292px',
                     listStyle: 'none',
                     zIndex: '10',
                   }}

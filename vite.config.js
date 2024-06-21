@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000, // Change port to 3000
+    port: 8888, // Change port to 3000
   },
   resolve: {
     alias: {

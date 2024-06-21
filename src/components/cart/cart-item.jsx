@@ -1,33 +1,88 @@
-import React from 'react';
+import { Add, Delete, Remove } from "@mui/icons-material";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { addItemToCart, removeItemFromCart } from "../../store/cart/cartSlice";
 
-const CartItem = ({ image, link, name, color, size, price, quantity, total }) => (
-  <tr className="cart-table-row">
-    <td className="align-middle whitespace-nowrap py-0">
-      <a className="block border border-gray-200 rounded-2" href={link}>
-        <img src={image} alt={name} width="53" />
-      </a>
-    </td>
-    <td className="products align-middle">
-      <a className="font-semibold mb-0 line-clamp-2" href={link}>{name}</a>
-    </td>
-    <td className="color align-middle whitespace-nowrap text-sm text-gray-600">{color}</td>
-    <td className="size align-middle whitespace-nowrap text-gray-400 text-sm font-semibold">{size}</td>
-    <td className="price align-middle text-gray-600 text-sm font-semibold text-right">{price}</td>
-    <td className="quantity align-middle text-sm pl-5">
-      <div className="input-group flex-nowrap">
-        <button className="btn btn-sm px-2" data-type="minus">-</button>
-        <input className="form-control text-center bg-transparent border-0 px-0" type="number" min="1" value={quantity} aria-label="Quantity" />
-        <button className="btn btn-sm px-2" data-type="plus">+</button>
+function CartItem({ item, onRemove, onQuantityChange }) {
+  const [quantity, setQuantity] = useState(item.quantity);
+  const dispatch = useDispatch();
+  const handleQuantityChange = (event) => {
+    setQuantity(parseInt(event.target.value));
+    onQuantityChange(item.id, parseInt(event.target.value));
+  };
+  const handleIncrease = () => {
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+    console.log(item);
+    dispatch(addItemToCart({ productToAdd: item, quantity: 1 }));
+  };
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+      dispatch(removeItemFromCart({ productToDecrease: item, quantity: 1 }));
+    }
+  };
+
+  const handleRemove = () => {
+    onRemove(item);
+  };
+
+  return (
+    <div className="flex items-center justify-between px-4 py-5 border-b border-gray-200">
+      <div className="flex items-center">
+        <img
+          src={item.avatar}
+          alt={item.name}
+          className="w-12 h-12 object-contain rounded-md"
+        />
+        <div className="ml-4">
+          <Link
+            to={`/products/${item.slug}`}
+            className="font-medium  text-[14px]"
+          >
+            {item.name}
+          </Link>
+        </div>
       </div>
-    </td>
-    <td className="total align-middle font-bold text-gray-700 text-right">{total}</td>
-    <td className="align-middle whitespace-nowrap text-right pr-0 pl-3">
-      <button className="btn btn-sm text-gray-400 hover:text-gray-600">
-        <i className="fas fa-trash"></i>
-      </button>
-    </td>
-  </tr>
-);
 
+      <div className="flex items-center text-[14px]">
+        <div className="flex items-center gap-x-2">
+          <button
+            onClick={handleDecrease}
+            className="px-2 py-1"
+            disabled={quantity <= 1}
+          >
+            <Remove />
+          </button>
+          <input
+            className="border border-gray-300 px-2 py-1 rounded-md text-center w-10 text-[14px]"
+            value={quantity}
+            onChange={handleQuantityChange}
+          />
+          <button onClick={handleIncrease} className="px-2 py-1">
+            <Add />
+          </button>
+        </div>
+
+        <div className="ml-4 font-bold">
+          {item.price.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </div>
+
+        <button
+          onClick={handleRemove}
+          className="ml-4 text-red-500 hover:text-red-700"
+        >
+          <Delete />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default CartItem;

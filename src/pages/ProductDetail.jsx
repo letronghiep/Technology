@@ -1,5 +1,5 @@
 import { Home } from "@mui/icons-material";
-import { Breadcrumbs, Link } from "@mui/material";
+import { Breadcrumbs, Container, Link } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Layout from "~/components/layout/layout";
@@ -27,7 +27,7 @@ function ProductDetail() {
   if (isFetching || !product) return <SkeletonProduct />;
   return (
     <Layout>
-      <>
+      <Container>
         <Breadcrumbs
           className=""
           sx={{
@@ -60,7 +60,7 @@ function ProductDetail() {
           </Link>
         </Breadcrumbs>
         {isFetching ? <SkeletonProduct /> : <SingleProduct product={product} />}
-      </>
+      </Container>
     </Layout>
   );
 }

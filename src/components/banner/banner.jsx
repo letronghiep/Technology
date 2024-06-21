@@ -19,7 +19,7 @@ function Banner() {
   }, []);
 
   return (
-    <div className="max-h-[500px] overflow-hidden">
+    <div className="max-h-[600px]">
       <SimpleSlider images={images} />
       {/* <Grid
         container
