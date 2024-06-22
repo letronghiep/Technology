@@ -49,19 +49,26 @@ function ProductByCategory() {
   return (
     <Layout>
       <Container className="h-[100vh]">
-        <div className="grid grid-cols-5 gap-3">
-          {list?.map((item) => (
-            <ProductItem
-              key={item._id}
-              avatar={item.avatar}
-              name={item.name}
-              price={item.price}
-              promotion={item.promotion}
-              quantity_import={item.quantity_import}
-              slug={item.slug}
-            />
-          ))}
-        </div>
+        {list.length > 0 ? (
+          <div className="grid grid-cols-5 gap-3">
+            {list.map((item) => (
+              <ProductItem
+                key={item._id}
+                avatar={item.avatar}
+                name={item.name}
+                price={item.price}
+                promotion={item.promotion}
+                quantity_import={item.quantity_import}
+                slug={item.slug}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center w-full p-20">
+            <h1 className="text-lg">Hiện không có sản phẩm</h1>
+          </div>
+        )}
+
         <div className="my-5">
           <Pagination
             currentPage={currentPage}
