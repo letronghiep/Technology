@@ -60,9 +60,7 @@ function AccountLayout({ children }) {
   return (
     <Layout>
       <Container
-        sx={{
-          height: "100%",
-        }}
+        className="h-[100%]"
       >
         <Breadcrumbs
           className=""

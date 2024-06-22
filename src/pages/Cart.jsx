@@ -2,19 +2,27 @@ import { ArrowBackIos, Home } from "@mui/icons-material";
 import { Breadcrumbs, Container, TextField } from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CartItem from "~/components/cart/cart-item";
 import Layout from "~/components/layout/layout";
-import { clearItemFromCart, handleQuantityItem } from "../store/cart/cartSlice";
-import qr from "~/assets/images/image.png";
+import { addItemToCart } from "../services/cart";
 import { createCheckout } from "../services/checkout";
+import { createShipping } from "../services/shipping";
+import {
+  clearCartItems,
+  clearItemFromCart,
+  handleQuantityItem,
+} from "../store/cart/cartSlice";
+import { createOrder } from "../services/orders";
 const STEP = {
   CART: 1,
   CHECKOUT: 2,
 };
 function Cart() {
   const cartItems = useSelector((state) => state.cart.cartItems);
+  console.log(cartItems);
   const dispatch = useDispatch();
   const handleRemoveItem = (productToClear) => {
     dispatch(clearItemFromCart(productToClear));
@@ -30,6 +38,7 @@ function Cart() {
       0
     );
   };
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -46,14 +55,78 @@ function Cart() {
     },
   });
   const [selectedOption, setSelectedOption] = useState("cash");
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
   };
-  const onSubmit = async (data) => {
-    const res = await createCheckout('NCB', 450000);
-    console.log(res);
 
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      const listCarts = cartItems.map((item) => ({
+        product_id: item._id,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+      console.log("ListCart()", listCarts);
+      // Add to cart
+      await addItemToCart(listCarts);
+      // Add shipping
+      const shippingForm = {
+        recipient_name: data.full_name,
+        phone_number: data.phone_number,
+        address: `${data.address} - ${data.ward} - ${data.district} - ${data.province}`,
+      };
+      const res = await createShipping(shippingForm);
+      const shipping = await res.metadata;
+      console.log(shipping);
+      if (shipping) {
+        // Create orders
+        const orderForm = {
+          shipping_id: shipping._id,
+          shipping_costs: selectedOption === "bank_transfer" ? 0 : shippingCost,
+          total_price:
+            selectedOption === "bank_transfer"
+              ? calculateTotal()
+              : calculateTotal() + shippingCost,
+        };
+        const res = await createOrder(orderForm);
+        console.log(res);
+        const checkout = await res.metadata;
+        if (checkout) {
+          // Clear cart
+          if (selectedOption === "bank_transfer") {
+            const formCheckout = {
+              bankCode: "NCB",
+              amount: calculateTotal(),
+            };
+            console.log("====================================");
+            console.log(formCheckout);
+            console.log("====================================");
+            const href = await createCheckout(formCheckout);
+            console.log(href);
+            window.open(href, "_blank");
+
+            dispatch(clearCartItems(cartItems));
+            setTimeout(() => {
+              navigate("/");
+            }, 3000);
+          } else {
+            toast("Thanh toán thành công");
+
+            dispatch(clearCartItems(cartItems));
+            setTimeout(() => {
+              navigate("/");
+            }, 3000);
+          }
+        } else {
+          toast("Tạo đơn thất bại");
+        }
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
   let bodyContent = (
     <>
@@ -317,14 +390,14 @@ function Cart() {
                   </label>
                 </div>
               </div>
-              {selectedOption === "bank_transfer" && (
+              {/* {selectedOption === "bank_transfer" && (
                 <div className="border border-slate-300 p-4 bg-white text-[14px] my-3">
                   <h4>VUI LÒNG QUÉT MÃ BÊN DƯỚI ĐỂ THANH TOÁN CHUYỂN KHOẢN</h4>
                   <div className="flex items-center justify-center">
                     <img src={qr} />
                   </div>
                 </div>
-              )}
+              )} */}
               <div className="my-3 border border-slate-300 p-4 bg-white">
                 {selectedOption === "bank_transfer" ? (
                   <>
@@ -385,6 +458,7 @@ function Cart() {
       </>
     );
   }
+  // if(!isLoading) return <h3>Loading</h3>
   return (
     <Layout>
       <Container sx={{ marginBottom: "auto" }}>{bodyContent}</Container>

@@ -1,6 +1,4 @@
 import axiosInstance from "../../configs/axiosInstance";
-const currentUser = localStorage.getItem("currentUser");
-const token = JSON.parse(currentUser)?.accessToken;
 export async function login(formData) {
   try {
     // const res = await axios({

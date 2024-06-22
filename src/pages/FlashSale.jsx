@@ -1,10 +1,9 @@
-import React from 'react'
-
+import React from "react";
+import { useSelector } from "react-redux";
 
 function FlashSale() {
-  return (
-    <div>FlashSale</div>
-  )
+  // const { news } = useSelector((state) => state.data);
+  return <div>FlashSale</div>;
 }
 
-export default FlashSale
+export default FlashSale;

@@ -19,3 +19,12 @@ export async function createOrder(formData) {
     throw new Error(error);
   }
 }
+export async function getOrderById(id) {
+  try {
+    const res = await axiosInstance(`/order/${id}`);
+    const data = await res.data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}

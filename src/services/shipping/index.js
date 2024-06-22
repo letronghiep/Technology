@@ -9,3 +9,12 @@ export async function createShipping(formData) {
     throw new Error(error);
   }
 }
+export async function getShippingById(id) {
+  try {
+    const res = await axiosInstance(`/shipping/${id}`);
+    const data = await res.data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}

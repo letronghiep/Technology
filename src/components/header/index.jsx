@@ -23,12 +23,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import { alpha, styled } from "@mui/material/styles";
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { onOpenLogin } from "../../hooks/useLoginModal";
-import { logout } from "../../services/auth";
-import toast from "react-hot-toast";
 import { onOpenRegister } from "../../hooks/useRegisterModal";
+import { logout } from "../../services/auth";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -111,6 +111,7 @@ export default function PrimarySearchAppBar() {
       <p>{title}</p>
     </div>
   );
+  // handle 
   const navigate = useNavigate();
   // logout
   const handleLogOut = async () => {
@@ -271,6 +272,7 @@ export default function PrimarySearchAppBar() {
               <StyledInputBase
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
+                
               />
             </Search>
             <Box sx={{ flexGrow: 1 }} />

@@ -7,14 +7,18 @@ import NewProducts from "~/components/product/products-slide/new-products";
 import Sidebar from "~/components/sidebar";
 import { getAllCategories } from "../services/categories";
 import { getAllProducts } from "../services/products";
-import { setProducts } from "../store/data/data.reducer";
+import { setNews, setProducts } from "../store/data/data.reducer";
 import { setLimit, setPage } from "../store/filter/filter.reducer";
+import { getAllNews } from "../services/news";
+import SliderNews from "../components/news/slider-news/slider-news";
+
 // import ProductLists from "~/components/product/product-list";
 
 function HomePage() {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [product, setProduct] = useState([]);
+  const [listNews, setListNews] = useState();
   const { page, sort, limit } = useSelector((state) => state.filter);
   const dispatch = useDispatch();
   async function fetchedCategories() {
@@ -29,6 +33,18 @@ function HomePage() {
     setIsLoading(false);
   }, []);
   useEffect(() => {
+    async function fetchedNews() {
+      const data = await getAllNews();
+      console.log("Dc", data)
+      if (data) {
+        setListNews(data.metadata);
+        dispatch(setNews(data.metadata));
+      }
+    }
+    fetchedNews();
+  }, []);
+  console.log("LIst", listNews);
+  useEffect(() => {
     async function fetchedProducts() {
       const data = await getAllProducts({ page, sort, limit });
       if (data) {
@@ -41,6 +57,7 @@ function HomePage() {
     }
     fetchedProducts();
   }, [page, sort, limit]);
+ 
   const pcs = useMemo(() => {
     return product.filter((item) => item.category_id?.category_name === "PC");
   }, [product]);
@@ -58,6 +75,7 @@ function HomePage() {
         <FlashSales products={product} />
         <NewProducts title="PC bán chạy" products={pcs} />
         <NewProducts title="Laptop bán chạy" products={laptops} />
+        <SliderNews title="Bài viết" news={listNews} />
       </>
     </Layout>
   );
