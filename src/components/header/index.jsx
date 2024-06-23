@@ -96,6 +96,9 @@ export default function PrimarySearchAppBar() {
   };
   const handleMenuRegister = () => {
     setAnchorEl(null);
+    console.log('====================================');
+    console.log("OK");
+    console.log('====================================');
     dispatch(onOpenRegister(true));
   };
 

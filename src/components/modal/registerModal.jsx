@@ -112,7 +112,7 @@ function RegisterModal() {
       <TextField
         label="Xác nhận mật khẩu"
         name="password"
-        type="confirm_password"
+        type="password"
         variant="outlined"
         sx={{ width: "100%" }}
         error={!!errors.confirm_password}
@@ -125,12 +125,12 @@ function RegisterModal() {
     <div className="flex flex-col gap-4 mt-3">
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex justify-center items-center gap-2">
-          <p>Nếu là lần đầu truy cập?</p>
+          <p>Bạn đã có tài khoản</p>
           <p
             className="text-neutral-800 cursor-pointer hover:underline"
             onClick={toggleModal}
           >
-            Tạo một tài khoản
+            Đăng nhập
           </p>
         </div>
       </div>
