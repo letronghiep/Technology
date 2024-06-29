@@ -24,7 +24,7 @@ import Toolbar from "@mui/material/Toolbar";
 import { alpha, styled } from "@mui/material/styles";
 import * as React from "react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { onOpenLogin } from "../../hooks/useLoginModal";
 import { onOpenRegister } from "../../hooks/useRegisterModal";
@@ -79,6 +79,20 @@ export default function PrimarySearchAppBar() {
       setCurrentUser(JSON.parse(user).user);
     }
   }, []);
+  // cart
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  const [cartCount, setCartCount] = React.useState(0);
+  React.useEffect(() => {
+    if (cartItems.length > 0) {
+      setCartCount(
+        cartItems
+          .map((item) => item.quantity)
+          .reduce((currentValue, total) => total + currentValue),
+        0
+      );
+    }
+  }, [cartItems]);
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const dispatch = useDispatch();
@@ -96,9 +110,6 @@ export default function PrimarySearchAppBar() {
   };
   const handleMenuRegister = () => {
     setAnchorEl(null);
-    console.log('====================================');
-    console.log("OK");
-    console.log('====================================');
     dispatch(onOpenRegister(true));
   };
 
@@ -114,7 +125,7 @@ export default function PrimarySearchAppBar() {
       <p>{title}</p>
     </div>
   );
-  // handle 
+  // handle
   const navigate = useNavigate();
   // logout
   const handleLogOut = async () => {
@@ -275,7 +286,6 @@ export default function PrimarySearchAppBar() {
               <StyledInputBase
                 placeholder="Search…"
                 inputProps={{ "aria-label": "search" }}
-                
               />
             </Search>
             <Box sx={{ flexGrow: 1 }} />
@@ -301,7 +311,7 @@ export default function PrimarySearchAppBar() {
                 color="inherit"
                 onClick={handleGoToCart}
               >
-                <Badge badgeContent={17} color="error">
+                <Badge badgeContent={cartCount} color="error">
                   <ShoppingCartOutlined />
                 </Badge>
               </IconButton>

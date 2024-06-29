@@ -59,9 +59,13 @@ function SingleProduct({ product }) {
     setValue((_value) => _value + 1);
   };
   const handleAddToCart = () => {
-    dispatch(addItemToCart({productToAdd: product, quantity: value}));
+    dispatch(addItemToCart({ productToAdd: product, quantity: value }));
     toast("Thêm vào giỏ hàng thành công");
   };
+  const handleGoCart = () =>{
+    handleAddToCart();
+    window.location.href = '/cart'
+  }
   if (!product) return <h2>Loading...</h2>;
   const bodyContent = (
     <ul>
@@ -214,8 +218,12 @@ function SingleProduct({ product }) {
               transition: "all .5s linear",
             }}
           >
-            <p className="uppercase text-[18px]">Mua ngay</p>
-            <p className="text-[13px] ">Giao tận nơi hoặc nhận tại cửa hàng</p>
+            <button onClick={handleGoCart}>
+              <p className="uppercase text-[18px]">Mua ngay</p>
+              <p className="text-[13px] ">
+                Giao tận nơi hoặc nhận tại cửa hàng
+              </p>
+            </button>
           </Box>
         </Grid>
       </Grid>

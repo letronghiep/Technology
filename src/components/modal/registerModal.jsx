@@ -34,6 +34,7 @@ function RegisterModal() {
     try {
       if (formData.password === formData.confirm_password) {
         const data = await registerUser(formData);
+        console.log(data)
         if (data) {
           dispatch(onCloseRegister(true));
           toast.success("Đăng ký thành công!");
